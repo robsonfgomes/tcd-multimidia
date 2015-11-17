@@ -7,14 +7,10 @@ setlocale(LC_ALL, 'pt_BR.utf-8');
 
 $app = new Silex\Application();
 $app['debug'] = true;
+$app->register(new \App\Resource\AngularPostRequestServiceProvider());
 
-$app->get('/', function() use($app){
-	return 'Hello World';
-});
 
-$app->get('hello/{name}', function($name) use($app){
-	return 'Hello, '. $name;
-});
+$app->mount('/', new \App\Controller\MainController());
 
 
 $app->run();
