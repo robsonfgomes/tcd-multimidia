@@ -21,10 +21,36 @@ class MainController implements ControllerProviderInterface{
 			return 'Hello World';
 		});
 
-		$routes->get('obras/estado/{estado}', function($estado) use($app, $db) {
-			$obras = $db->obrasByEstado($estado);
-			return $app->json($obras);
+		$routes->get('obras/all/concluidas', function() use($app, $db) {
+			$obras = $db->getAllObrasConcluidas();			
+
+			return $app->json(getCoordenadasDD($obras));
 		});
+
+		function getCoordenadasDD($obras) {
+			foreach ($obras as $key => $obra) {
+				//latitude
+				$obras[$key]['val_lat'] = str_replace('"','',$obras[$key]['val_lat']);
+				$obras[$key]['val_lat'] = substr($obras[$key]['val_lat'],0,-1);
+				$arr = array();
+				$result = preg_match('/^(\d\d?).(\d\d?).(\d\d?(?:[.,]\d+)?).$/u', $obras[$key]['val_lat'], $arr);
+
+				//convervento coordenadas de dms para dd			
+				$obras[$key]['val_lat'] = '-';
+				$obras[$key]['val_lat'] .= ($arr[1] + ($arr[2]/60) + ($arr[3]/3600));
+
+				//longitude
+				$obras[$key]['val_long'] = str_replace('"','',$obras[$key]['val_long']);
+				$obras[$key]['val_long'] = substr($obras[$key]['val_long'],0,-1);
+				$arr2 = array();
+				$result = preg_match('/^(\d\d?).(\d\d?).(\d\d?(?:[.,]\d+)?).$/u', $obras[$key]['val_long'], $arr2);
+
+				//convervento coordenadas de dms para dd			
+				$obras[$key]['val_long'] = '-';
+				$obras[$key]['val_long'] .= ($arr2[1] + ($arr2[2]/60) + ($arr2[3]/3600));
+			}
+			return $obras;
+		}
 
 		return $routes;
 	}
