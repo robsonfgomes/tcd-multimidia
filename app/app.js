@@ -15,7 +15,7 @@
 
 		  	var marker = new google.maps.Marker({
 			    position: myCenter,
-			    title:'Click to zoom'
+			    title:'Click to zoom'			    
 		    });
 
 		  	marker.setMap($scope.map);
@@ -39,7 +39,8 @@
 			var myCenter=new google.maps.LatLng(x, y);
 			var marker = new google.maps.Marker({
 			    position: myCenter,
-			    title:'Click to zoom'
+			    title:'Click to zoom',
+			    icon: 'assets/img/verde.png'
 		    });
 
 		  	marker.setMap($scope.map);
