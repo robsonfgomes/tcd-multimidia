@@ -1,0 +1,33 @@
+<div class="pane-head">	
+	<button type="button" class="close" data-ng-click="panels.close();">×</button>
+	<!--
+		<div class="row">
+			<div class="col-lg-8 col-md-8 col-xs-8">
+				<h5>Brasil por estados</h5>
+			</div>
+			<div class="col-lg-4 col-md-4 col-xs-4">
+				<div class="dropdown">
+				  <i class="dropdown-toggle fa fa-ellipsis-v fa-2x pull-right"  id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">			    
+				  </i>
+				  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+				    <li><a data-ng-click="panels.close();" href="#">Action</a></li>
+				    <li><a href="#">Another action</a></li>
+				    <li><a href="#">Something else here</a></li>
+				    <li role="separator" class="divider"></li>
+				    <li><a href="#">Separated link</a></li>
+				  </ul>
+				</div>
+			</div>
+		</div>	
+	-->
+</div>
+
+<div class="pane-body">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		<h4>Brasil por estados</h4>
+		<hr>
+		<ul class="list-group" ng-repeat="estado in estados">
+			<li>{{estado.nome}}</li>	
+		</ul>
+	</div>
+</div>

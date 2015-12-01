@@ -5,18 +5,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Obras do Pac</title>
         <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="assets/css/mapa.css">
-        
+        <link rel="stylesheet" type="text/css" href="assets/css/app.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+        <!--Fonr Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">               
+
         <script src="node_modules/angular/angular.min.js"></script>
         <script src="node_modules/angular-route/angular-route.min.js"></script>             
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
         <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="http://maps.googleapis.com/maps/api/js"></script>
-        <script src="app.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="assets/css/angular.panels.css">
+        <script src="assets/js/angular.panels.js"></script>
+        
+        <script src="app.js"></script>        
+        
     </head>
-    <body ng-controller="HomeController">
-        <div>                                  
-            <div id="googleMap"></div>
-        </div>
+    <body>               
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#/tranportes">Obras Pac</a>  
+                </div>
+                
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" ng-controller="homeController">
+                    <ul class="nav navbar-nav">
+                        <li ng-class="{active: isActive('/transportes')}"><a href="#/tranportes">Estatísticas</a></li>
+                        <li ng-class="{active: isActive('/obras-no-mapa')}"><a href="#/obras-no-mapa">Mapa</a></li>                        
+                    </ul>                                        
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+                
+        <div ng-view></div>            
     </body>
 </html>

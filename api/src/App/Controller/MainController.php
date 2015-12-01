@@ -24,9 +24,10 @@ class MainController implements ControllerProviderInterface{
 		$routes->get('obras/all/concluidas', function() use($app, $db) {
 			$obras = $db->getAllObrasConcluidas();			
 
-			return $app->json(getCoordenadasDD($obras));
+			return $app->json($obras);
 		});
 
+		/*
 		function getCoordenadasDD($obras) {
 			foreach ($obras as $key => $obra) {
 				//latitude
@@ -51,6 +52,7 @@ class MainController implements ControllerProviderInterface{
 			}
 			return $obras;
 		}
+		*/
 
 		return $routes;
 	}
