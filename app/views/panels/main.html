@@ -24,10 +24,10 @@
 
 <div class="pane-body">
 	<div class="col-lg-12 col-md-12 col-xs-12">
-		<h4>Brasil por estados</h4>
+		<h4 class="text-center">Brasil por estados</h4>
 		<hr>
-		<ul class="list-group" ng-repeat="estado in estados">
-			<li>{{estado.nome}}</li>	
+		<ul id="listaEstados" ng-repeat="estado in estados">
+			<li><span ng-click="obrasPorEstado(estado)"><i class="fa fa-map-marker"></i> {{estado.nome}}</span></li>	
 		</ul>
 	</div>
 </div>

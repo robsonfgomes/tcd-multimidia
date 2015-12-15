@@ -6,9 +6,8 @@ html, body {
 
 body .navbar {
 	margin-bottom: 0;
+	/*background-color: #252b30; */
 }
-
-
 div#googleMap {	
     position: absolute;
     width: 100%;
@@ -17,3 +16,27 @@ div#googleMap {
  #map { 
     height: 100%; 
  }
+ /*
+ 	Css da lista de estados brasileiros do mapa
+ */
+ ul#listaEstados {
+ 	list-style: none;
+ 	border: 0;
+ 	font-size: 1.2em;
+ 	color: #333;
+ }
+ ul#listaEstados li span {
+ 	cursor: pointer;
+ }
+ .dimming {
+ 	background: none !important;
+ }
+
+
+/* chartjs*/
+.chart-legend li span{
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;    
+}

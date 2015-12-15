@@ -14,11 +14,11 @@ app.config(function($routeProvider) {
             controller : 'transportesController'
         })
         .otherwise({
-           redirectTo: '/transportes'
+           redirectTo: '/obras-no-mapa'
         });             
     } 
 );
-
+//configurando os painéis
 app.config(['panelsProvider', function(panelsProvider){
     panelsProvider
         .add({
@@ -27,122 +27,160 @@ app.config(['panelsProvider', function(panelsProvider){
             size: '400px',
             templateUrl: 'views/panels/main.html',
             controller: 'ObrasNoMapaController'
+        })
+        .add({
+            id: 'estado',
+            position: 'left',
+            size: '400px',
+            templateUrl: 'views/panels/estado.html',
+            controller: 'EstadoController'
         });
 }]);
 
+//configurand os serviços globais
+app.service('PropriedadesCompartilhadas', function () {
+    var item;
 
-app.controller('ObrasNoMapaController', function($scope, $http, $location, panels){ 
+    return {
+        getItem: function () {
+            return item;
+        },
+        setItem: function(value) {
+            item = value;
+        }
+    };
+});
+
+app.service('dadosDaObra', function () {
+    var item;
+
+    return {
+        getItem: function () {
+            return item;
+        },
+        setItem: function(value) {
+            item = value;
+        }
+    };
+});
+
+
+app.controller('ObrasNoMapaController', function($scope, $http, $location, panels, PropriedadesCompartilhadas, dadosDaObra){ 
+        //variaveis
+        $scope.markers = [];
         //estados brasileiros
         $scope.estados = [
             {
                 nome: 'Acre',
-                sigla: 'AC'
+                uf: 'AC'
             },            
             {
                 nome: 'Alagoas',
-                sigla: 'AL'
+                uf: 'AL'
             },
             {
                 nome: 'Amapá',
-                sigla: 'AP'
+                uf: 'AP'
             },
             {
                 nome: 'Amazonas',
-                sigla: 'AM'
+                uf: 'AM'
             },
             {
                 nome: 'Bahia',
-                sigla: 'BA'
+                uf: 'BA'
             },
             {
                 nome: 'Ceará',
-                sigla: 'CE'
+                uf: 'CE'
             },
             {
                 nome: 'Distrito Federal',
-                sigla: 'DF'
+                uf: 'DF'
             },
             {
                 nome: 'Espírito Santo',
-                sigla: 'ES'
+                uf: 'ES'
             },
             {
                 nome: 'Goiás',
-                sigla: 'GO'
+                uf: 'GO'
             },
             {
                 nome: 'Maranhão',
-                sigla: 'MA'
+                uf: 'MA'
             },
             {
                 nome: 'Mato Grosso',
-                sigla: 'MT'
+                uf: 'MT'
             },
             {
                 nome: 'Mato Grosso do Sul',
-                sigla: 'MS'
+                uf: 'MS'
             },
             {
                 nome: 'Minas Gerais',
-                sigla: 'MG'
+                uf: 'MG'
             },
             {
                 nome: 'Pará',
-                sigla: 'PA'
+                uf: 'PA'
             },
             {
                 nome: 'Paraíba',
-                sigla: 'PB'
+                uf: 'PB'
             },
             {
                 nome: 'Paraná',
-                sigla: 'PR'
+                uf: 'PR'
             },
             {
                 nome: 'Pernambuco',
-                sigla: 'PE'
+                uf: 'PE'
             },
             {
                 nome: 'Piauí',
-                sigla: 'PI'
+                uf: 'PI'
             },
             {
                 nome: 'Rio de Janeiro',
-                sigla: 'RJ'
+                uf: 'RJ'
             },
             {
                 nome: 'Rio Grande do Norte',
-                sigla: 'RN'
+                uf: 'RN'
             },
             {
                 nome: 'Rio Grande do Sul',
-                sigla: 'RS'
+                uf: 'RS'
             },
             {
                 nome: 'Rondônia',
-                sigla: 'RO'
+                uf: 'RO'
             },
             {
                 nome: 'Roraima',
-                sigla: 'RR'
+                uf: 'RR'
             },
             {
                 nome: 'Santa Catarina',
-                sigla: 'SC'
+                uf: 'SC'
             },
             {
                 nome: 'São Paulo',
-                sigla: 'SP'
+                uf: 'SP'
             },
             {
                 nome: 'Sergipe',
-                sigla: 'SE'
+                uf: 'SE'
             },
             {
                 nome: 'Tocantins',
-                sigla: 'TO'
+                uf: 'TO'
             }
         ];
+
+
 
         (function() {
             var myCenter = new google.maps.LatLng(-10.132177, -48.154633);
@@ -215,6 +253,7 @@ app.controller('ObrasNoMapaController', function($scope, $http, $location, panel
             //});
         })();
 
+
         $http.get('/tcd-multimidia/api/obras/all/concluidas').success(function(dados) {
             $scope.obras = dados;            
             for (var i in $scope.obras) {
@@ -225,24 +264,145 @@ app.controller('ObrasNoMapaController', function($scope, $http, $location, panel
                 } else {
                     $scope.obras[i].marker = 'assets/img/verde.png';
                 }
-                $scope.adicionarPonto($scope.obras[i].val_lat, $scope.obras[i].val_long, $scope.obras[i].marker);
+                $scope.adicionarPonto($scope.obras[i].val_lat, $scope.obras[i].val_long, $scope.obras[i].marker, $scope.obras[i].idn_empreendimento);
             }
         });
 
-        $scope.adicionarPonto = function(x, y, icon) {
+        $scope.adicionarPonto = function(x, y, icon, idDoPonto) {
             var myCenter = new google.maps.LatLng(x, y);
             var marker = new google.maps.Marker({
                 position: myCenter,
-                title: 'Click to zoom',
+                title: 'Click para mostrar detalhes',
                 icon: icon
             });
 
-            marker.setMap($scope.map);
-        };
+            google.maps.event.addListener(marker, 'click', function() {
+                //alert(idDoPonto);
+                $http.get('/tcd-multimidia/api/obras/id/'+idDoPonto+'').success(function(dados) {
+                    //console.log(dados);
+                    dadosDaObra.setItem(dados);
+                    panels.open('estado');
+                });
+            });
+
+            $scope.markers.push(marker);
+            marker.setMap($scope.map);            
+        };    
+        
+        //função de click para cada estado
+        $scope.obrasPorEstado = function(estado) {  
+            dadosDaObra.setItem('');  
+            $scope.estado = estado;        
+            //removendo todos os marcadores do mapa
+            for (var i = 0; i < $scope.markers.length; i++) {
+                $scope.markers[i].setMap(null);
+            }
+            $scope.markers = [];
+
+            //carregando as obras do estado selecionado
+            $http.get('/tcd-multimidia/api/obras/'+ $scope.estado.uf+'/all').success(function(dados) {
+                $scope.obras = dados;            
+                for (var i in $scope.obras) {
+                    if($scope.obras[i].idn_estagio <= 10) {
+                        $scope.obras[i].marker = 'assets/img/vermelho.png';
+                    } else if($scope.obras[i].idn_estagio <= 71) {
+                        $scope.obras[i].marker = 'assets/img/amarelo.png';
+                    } else {
+                        $scope.obras[i].marker = 'assets/img/verde.png';
+                    }
+                    $scope.adicionarPonto($scope.obras[i].val_lat, $scope.obras[i].val_long, $scope.obras[i].marker, $scope.obras[i].idn_empreendimento);
+                }
+            });
+            //setando as estatísticas do estado
+            $http.get('/tcd-multimidia/api/obras/'+$scope.estado.uf+'/estatisticas').success(function(dados) {
+                $scope.estado.estatisticas = dados;
+            });             
+            PropriedadesCompartilhadas.setItem($scope.estado);
+            panels.close('menuEstados');                          
+            panels.open('estado');
+        };        
+});
+
+app.controller('EstadoController', function($scope, $http, $location, panels, PropriedadesCompartilhadas, dadosDaObra){            
+    $scope.getEstado = function() {
+        if(PropriedadesCompartilhadas.getItem()) {
+
+        $scope.total = parseInt(PropriedadesCompartilhadas.getItem().estatisticas.vermelho.qt) + parseInt(PropriedadesCompartilhadas.getItem().estatisticas.amarelo.qt) + parseInt(PropriedadesCompartilhadas.getItem().estatisticas.verde.qt);
+        $scope.vermelho = Math.round(((parseInt(PropriedadesCompartilhadas.getItem().estatisticas.vermelho.qt)) / $scope.total) * 100);
+        $scope.amarelo = Math.round(((parseInt(PropriedadesCompartilhadas.getItem().estatisticas.amarelo.qt)) / $scope.total) * 100);
+        $scope.verde = Math.round(((parseInt(PropriedadesCompartilhadas.getItem().estatisticas.verde.qt)) / $scope.total) * 100);
+        $scope.estado = PropriedadesCompartilhadas.getItem();     
+        $scope.graficoDoEstado($scope.vermelho, $scope.amarelo, $scope.verde);        
+        return $scope.estado;
+        }
+    }
+
+    $scope.getDadosDaObra = function() {
+        if(dadosDaObra.getItem()) {
+            $scope.obra = dadosDaObra.getItem();
+            return $scope.obra;
+        }
+    };
+
+    $scope.voltar = function() {                    
+        panels.close('estado');
+        panels.open('menuEstados');    
+    };
+
+    //função para converter o valor para moeda
+    $scope.formatReal = function(valor) {
+        var int = parseInt(valor);
+        var tmp = int+'';
+        tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+        if( tmp.length > 6 )
+                tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+
+        return tmp;
+    }
+
+    //create a chart
+    $scope.graficoDoEstado = function(vermelho, amarelo, verde) {
+        
+        var ctx = document.getElementById("myChart").getContext("2d");
+
+        var data = [
+            {
+                value: vermelho,
+                color:"#F7464A",
+                highlight: "#FF5A5E",
+                label: "Não iniciadas"
+            },            
+            {
+                value: amarelo,
+                color: "#FDB45C",
+                highlight: "#FFC870",
+                label: "Em andamento"
+            },
+            {
+                value: verde,
+                color: "#46BFBD",
+                highlight: "#5AD3D1",
+                label: "Concluidas"
+            }
+        ];
+        //options
+        var options = {
+            segmentShowStroke: false,
+            animateRotate: true,
+            animateScale: false,
+            percentageInnerCutout: 50,
+            tooltipTemplate: "<%= value %>%"
+        }
+        // And for a doughnut chart
+        myDoughnutChart = new Chart(ctx).Doughnut(data, options);
+
+        //add a legend
+        document.getElementById('js-legend').innerHTML = myDoughnutChart.generateLegend();
+    };    
 });
 
 app.controller('transportesController', function($scope, $http, $location){    
-     
+    
 });
 
 app.controller('homeController', function($scope, $http, $location){

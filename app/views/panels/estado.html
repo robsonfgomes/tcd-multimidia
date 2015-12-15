@@ -1,0 +1,28 @@
+<div class="pane-head">	
+	<button type="button" class="close" data-ng-click="panels.close();">×</button>	
+</div>
+
+<div class="pane-body">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		<div class="row">
+			<div class="col-lg-3 col-md-3 col-xs-3">
+				<span ng-click="voltar()"><i class="fa fa-arrow-left fa-2x pull-left"></i></span>
+			</div>
+			<div class="col-lg-9 col-md-9 col-xs-9">
+				<h4>{{getEstado().nome}}</h4>					
+			</div>
+		</div>
+		<hr>				
+		<p style="font-size: 20px;">Estatísticas de obras</p>		
+		<canvas id="myChart" width="200" height="200"></canvas>
+		<div id="js-legend" class="chart-legend"></div>
+
+		<hr>		
+		<div ng-if="getDadosDaObra();">
+		    <p><strong>Título: </strong>{{getDadosDaObra().dsc_titulo;}}</p>
+			<p><strong>Investimento total: </strong>R$ {{formatReal(getDadosDaObra().investimento_total);}}</p>
+			<p><strong>Executado por: </strong>{{getDadosDaObra().txt_executores;}}</p>
+			<p><strong>Orgão: </strong>{{getDadosDaObra().dsc_orgao;}}</p>	
+		</div>				
+	</div>
+</div>

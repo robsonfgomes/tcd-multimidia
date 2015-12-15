@@ -23,8 +23,26 @@ class MainController implements ControllerProviderInterface{
 
 		$routes->get('obras/all/concluidas', function() use($app, $db) {
 			$obras = $db->getAllObrasConcluidas();			
-
 			return $app->json($obras);
+		});
+
+		$routes->get('obras/{uf}/all', function($uf) use($app, $db) {
+			$obras = $db->getAllObrasByEstado($uf);
+			return $app->json($obras);
+		});
+
+		$routes->get('obras/id/{idn_empreendimento}', function($idn_empreendimento) use($app, $db) {
+			$obra = $db->getObra($idn_empreendimento);
+			return $app->json($obra);
+		});
+
+		$routes->get('obras/{uf}/estatisticas', function($uf) use($app, $db) {
+			$data = array();
+			$data['vermelho'] = $db->getQtObrasNaoIniciadasByEstado($uf);
+			$data['amarelo'] = $db->getQtObrasEmConstrucaoByEstado($uf);
+			$data['verde'] = $db->getQtObrasConcluidasByEstado($uf);
+			
+			return $app->json($data);
 		});
 
 		/*
